@@ -1,6 +1,5 @@
 # koa-jwt-study
 Record the koa, jwt sample code to a personal study
-
 Tutorial on this project is available at https://backend-intro.vlpt.us/
 
 
