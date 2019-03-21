@@ -8,17 +8,19 @@ const router = new Router();
 const api = require('./api');
 
 const mongoose = require('mongoose');
+const bodyParser = require('koa-bodyparser');
+
 mongoose.Promise = global.Promise;
 
-mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true})
-    .then(() => {
-        console.log(`Successfully connected to MongoDB`);
-    })
-    .catch(err => {
-        console.error(err);
-    });
+mongoose.connect(process.env.MONGO_URI).then(() => {
+    console.log(`Successfully connected to MongoDB`);
+}).catch(err => {
+    console.error(err);
+});
 
 const PORT = process.env.PORT || 4000;
+
+app.use(bodyParser());
 
 router.use('/api', api.routes());
 
