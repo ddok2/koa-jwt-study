@@ -12,7 +12,10 @@ const bodyParser = require('koa-bodyparser');
 
 mongoose.Promise = global.Promise;
 
-mongoose.connect(process.env.MONGO_URI).then(() => {
+mongoose.connect(
+    process.env.MONGO_URI,
+    { useNewUrlParser: true },
+).then(() => {
     console.log(`Successfully connected to MongoDB`);
 }).catch(err => {
     console.error(err);
@@ -25,7 +28,6 @@ app.use(bodyParser());
 router.use('/api', api.routes());
 
 app.use(router.routes()).use(router.allowedMethods());
-
 app.listen(PORT, () => {
     console.log(`Server is listening to port: ${PORT}`);
 });
