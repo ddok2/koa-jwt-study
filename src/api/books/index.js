@@ -5,6 +5,8 @@ const booksController = require('./books.controller');
 
 books.get('/', booksController.list);
 
+books.get('/:id', booksController.get);
+
 books.post('/', booksController.create);
 
 books.put('/', booksController.delete);
