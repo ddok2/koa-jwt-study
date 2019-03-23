@@ -3,9 +3,9 @@ const { Schema } = mongoose;
 const crypto = require('crypto');
 
 function hash(password) {
-    return crypto.createHmac('sha256', process.env.SECRET_KEY)
-        .update(password)
-        .digest('hex');
+    return crypto.createHmac('sha256', process.env.SECRET_KEY).
+        update(password).
+        digest('hex');
 }
 
 const Account = new Schema({
@@ -25,5 +25,30 @@ const Account = new Schema({
     thoughtCount: { type: Number, default: 0 },
     createdAt: { type: Date, default: Date.now },
 });
+
+Account.statics.findByUsername = username => {
+    return this.findOne({ 'profile.username': username }).exec();
+};
+
+Account.statics.findByEmail = email => {
+    return this.findOne({ email });
+};
+
+Account.statics.localRegister = ({ username, email, password }) => {
+    const account = new this({
+        profile: {
+            username,
+        },
+        email,
+        password: hash(password),
+    });
+
+    return account.save();
+};
+
+Account.methods.validatePassword = password => {
+    const hashed = hash(password);
+    return this.password === hashed;
+};
 
 module.exports = mongoose.model('Account', Account);
