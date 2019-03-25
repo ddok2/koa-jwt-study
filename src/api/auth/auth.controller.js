@@ -1,5 +1,5 @@
 const Joi = require('joi');
-const Account = require('models/Account');
+const Account = require('../../models/Account');
 
 module.exports = {
     localRegister: async ctx => {
@@ -16,22 +16,22 @@ module.exports = {
             return;
         }
 
-        let existing = null;
-        try {
-            existing = await Account.findByEmailOrUsername(ctx.request.body);
-        } catch (e) {
-            ctx.throw(500, e);
-        }
-
-        if (existing) {
-            ctx.status = 409; // Conflict
-            ctx.body = {
-                key: existing.email === ctx.request.body.email ?
-                    'email' :
-                    'username',
-            };
-            return;
-        }
+        // let existing = null;
+        // try {
+        //     existing = await Account.findByEmailOrUsername(ctx.request.body);
+        // } catch (e) {
+        //     ctx.throw(500, e);
+        // }
+        //
+        // if (existing) {
+        //     ctx.status = 409; // Conflict
+        //     ctx.body = {
+        //         key: existing.email === ctx.request.body.email ?
+        //             'email' :
+        //             'username',
+        //     };
+        //     return;
+        // }
 
         let account = null;
         try {
