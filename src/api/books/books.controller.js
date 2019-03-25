@@ -1,7 +1,7 @@
 const Joi = require('joi');
 const { Types: { ObjectId } } = require('mongoose');
 
-const Book = require('models/book');
+const Book = require('../../models/book');
 
 module.exports = {
     get: async ctx => {
