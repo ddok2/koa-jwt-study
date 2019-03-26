@@ -16,22 +16,22 @@ module.exports = {
             return;
         }
 
-        // let existing = null;
-        // try {
-        //     existing = await Account.findByEmailOrUsername(ctx.request.body);
-        // } catch (e) {
-        //     ctx.throw(500, e);
-        // }
-        //
-        // if (existing) {
-        //     ctx.status = 409; // Conflict
-        //     ctx.body = {
-        //         key: existing.email === ctx.request.body.email ?
-        //             'email' :
-        //             'username',
-        //     };
-        //     return;
-        // }
+        let existing = null;
+        try {
+            existing = await Account.findByEmailOrUsername(ctx.request.body);
+        } catch (e) {
+            ctx.throw(500, e);
+        }
+
+        if (existing) {
+            ctx.status = 409; // Conflict
+            ctx.body = {
+                key: existing.email === ctx.request.body.email ?
+                    'email' :
+                    'username',
+            };
+            return;
+        }
 
         let account = null;
         try {
@@ -40,6 +40,17 @@ module.exports = {
             ctx.throw(500, e);
         }
 
+        let token = null;
+
+        try {
+            token = await account.generateToken();
+        } catch (err) {
+            ctx.throw(500, err);
+        }
+        ctx.cookie.set('access_token', token, {
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 24
+        });
         ctx.body = account.profile;
     },
     localLogin: async ctx => {
@@ -69,6 +80,19 @@ module.exports = {
             return;
         }
 
+        let token = null;
+
+        try {
+            token = await account.generateToken();
+        } catch (err) {
+            ctx.throw(500, err);
+        }
+
+        ctx.cookie.set('access_token', token, {
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 24
+        });
+
         ctx.body = account.profile;
     },
     exists: async ctx => {
@@ -88,6 +112,11 @@ module.exports = {
         };
     },
     logout: async ctx => {
-        ctx.body = 'logout';
+        ctx.cookie.set('access_token', null, {
+            httpOnly: true,
+            maxAge: 0
+        });
+
+        ctx.status = 204;
     },
 };
