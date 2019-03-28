@@ -49,7 +49,7 @@ module.exports = {
         }
         ctx.cookie.set('access_token', token, {
             httpOnly: true,
-            maxAge: 1000 * 60 * 60 * 24
+            maxAge: 1000 * 60 * 60 * 24,
         });
         ctx.body = account.profile;
     },
@@ -90,7 +90,7 @@ module.exports = {
 
         ctx.cookie.set('access_token', token, {
             httpOnly: true,
-            maxAge: 1000 * 60 * 60 * 24
+            maxAge: 1000 * 60 * 60 * 24,
         });
 
         ctx.body = account.profile;
@@ -114,9 +114,18 @@ module.exports = {
     logout: async ctx => {
         ctx.cookie.set('access_token', null, {
             httpOnly: true,
-            maxAge: 0
+            maxAge: 0,
         });
 
         ctx.status = 204;
+    },
+    check: (ctx) => {
+        const { user } = ctx.request;
+        if (!user) {
+            ctx.status = 403;
+            return;
+        }
+
+        ctx.body = user.profile;
     },
 };

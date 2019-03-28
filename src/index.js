@@ -6,6 +6,7 @@ const Router = require('koa-router');
 const app = new Koa();
 const router = new Router();
 const api = require('./api');
+const { jwtMiddleware } = require('lib/token');
 
 const mongoose = require('mongoose');
 const bodyParser = require('koa-bodyparser');
@@ -24,7 +25,7 @@ mongoose.connect(
 const PORT = process.env.PORT || 4000;
 
 app.use(bodyParser());
-
+app.use(jwtMiddleware);
 router.use('/api', api.routes());
 
 app.use(router.routes()).use(router.allowedMethods());
